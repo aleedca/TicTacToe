@@ -13,14 +13,13 @@ export default function Game() {
     let [lock, setLock] = useState(false);
     let [winner, setWinner] = useState(null);
     let [isModalVisible, setIsModalVisible] = useState(false);
-    const [pendingClick, setPendingClick] = useState(false);
 
 
     // handle the click event of each square of the board
     const handleClick = (event, num) => {
         event.preventDefault();
 
-        if (lock) { // check if the board is locked or a click is pending
+        if (lock) { // check if the board is locked
             return 0;
         }
 
@@ -28,12 +27,12 @@ export default function Game() {
             return;
         }
 
-        if (count % 2 === 0) { // check if the count is even or odd and set the image accordingly
-            event.target.innerHTML = `<img src='${cross}' class='fade-in'>`;
+        else if (count % 2 !== 0) { // check if the count is even or odd and set the image accordingly
+            event.target.innerHTML = `<img src='${cross}' class='fade-in' alt=''>`;
             data[num] = 'X';
             setCount(++count);
         } else {
-            event.target.innerHTML = `<img src='${circle}' class='fade-in'>`;
+            event.target.innerHTML = `<img src='${circle}' class='fade-in' alt=''>`;
             data[num] = 'O';
             setCount(++count);
         }
@@ -57,7 +56,7 @@ export default function Game() {
             square.innerHTML = '';
         });
 
-        if (selection === 1) {
+        if (selection === 1) { // if the user clicks on the go back button then navigate to the home page
             navigate('/');
         }
     }
@@ -80,6 +79,8 @@ export default function Game() {
             won(data[0]);
         } else if (data[2] === data[4] && data[4] === data[6] && data[2] !== '') {
             won(data[2]);
+        } else if (count === 9) {
+            won('D'); // if there is no winner and the count is 9 then it is a draw
         }
     }
 
@@ -91,7 +92,7 @@ export default function Game() {
     // check if there is a winner after each render having a dependency of the state of 'winner'
     // it first checks if there is a winner and then lock the board and show the winner
     useEffect(() => {
-        if (winner) {
+        if (winner && winner !== 'D') {
             setLock(true);
             setTimeout(() => {
                 showModal();
@@ -131,12 +132,18 @@ export default function Game() {
             {isModalVisible && winner && (
                 <div className="modal">
                     <div className="modal-content">
-                        <div className='img-conffeti'>
-                            <img src={conffeti}/>
-                        </div>
+                        {winner !== 'D' && (
+                            <div className='img-conffeti'>
+                                <img src={conffeti} alt=''/>
+                            </div>
+                        )}
 
                         <div className='content'>
-                            <h1>Player {winner === 'X' ? <img src={cross} /> : <img src={circle} />} wins</h1>
+                            {winner === 'D' ? (
+                                <h1>Draw <img src={cross} alt=''/> <img src={circle} alt=''/></h1>
+                            ) : (
+                                <h1>Player {winner === 'X' ? <img src={cross} alt=''/> : <img src={circle} alt=''/>} wins</h1>
+                            )}
                         </div>
                     </div>
                     <Link to='/'><button onClick={(e) => handleRestart(e, 1)}>Go back</button></Link>
