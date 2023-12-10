@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/tictactoe/static/css/main.0bfee30a.css",
-    "main.js": "/tictactoe/static/js/main.a808f06c.js",
-    "static/media/conffeti.png": "/tictactoe/static/media/conffeti.b69f91ba0a7443e4af3a.png",
-    "index.html": "/tictactoe/index.html",
-    "main.0bfee30a.css.map": "/tictactoe/static/css/main.0bfee30a.css.map",
-    "main.a808f06c.js.map": "/tictactoe/static/js/main.a808f06c.js.map"
+    "main.css": "/TicTacToe/static/css/main.0bfee30a.css",
+    "main.js": "/TicTacToe/static/js/main.6199b43c.js",
+    "static/media/conffeti.png": "/TicTacToe/static/media/conffeti.b69f91ba0a7443e4af3a.png",
+    "index.html": "/TicTacToe/index.html",
+    "main.0bfee30a.css.map": "/TicTacToe/static/css/main.0bfee30a.css.map",
+    "main.6199b43c.js.map": "/TicTacToe/static/js/main.6199b43c.js.map"
   },
   "entrypoints": [
     "static/css/main.0bfee30a.css",
-    "static/js/main.a808f06c.js"
+    "static/js/main.6199b43c.js"
   ]
 }
