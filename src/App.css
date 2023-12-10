@@ -6,7 +6,7 @@
   --primary-color-100: #B6B79E;
   --primary-color-200: #8E7B5E;
   --primary-color-300: #FFFFE7;
-  --primary-color-400: 0,0,0;
+  --primary-color-400: #000000;
 
   --secondary-color-100: #E8830C;
   --secondary-color-200: #9c8765;
@@ -26,6 +26,7 @@ body {
 
 button {
   background-color: var(--primary-color-200);
+  color: var(--primary-color-400);
   border-radius: 0.5rem;
   border: none;
   width: 15rem;
@@ -63,6 +64,7 @@ button:hover {
   font-size: 3rem;
   font-weight: bold;
   color: var(--primary-color-400);
+  margin: 0 auto;
 }
 
 .components h3 {
@@ -111,7 +113,7 @@ button:hover {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(var(--primary-color-400), 0.83);
+  background-color: rgba(0, 0, 0, 0.83);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -123,22 +125,41 @@ button:hover {
   color: var(--primary-color-300);
   padding: 20px;
   border-radius: 10px;
-  margin: 14.5rem;
   text-align: center;
 }
 
 .content img {
-  width: 2rem;
-  height: 2rem;
+  width: 1.8rem;
+  height: 1.8rem;
+  padding-inline: 0.5rem;
   position: relative;
 }
 
 .img-conffeti img {
   position: absolute;
-  max-height: 75%;
-  min-height: 60%;
-  top: 0; /* This positions the image at the top of the screen */
+  max-height: 55%;
+  min-height: 50%;
+  top: 0;
   left: 0;
   width: 100%;
   opacity: 0.7;
+}
+
+/* MEDIA QUERIES ----------------------------------------------------------------------------------------------------------*/
+
+@media (max-width: 54rem) {
+  .components h1 {
+    font-size: 2.3rem;
+  }
+
+  .square {
+    width: 6.6rem;
+    height: 6.6rem;
+  }
+
+  button {
+    width: 12rem;
+    height: 4rem;
+    font-size: 1.2rem;
+  }
 }

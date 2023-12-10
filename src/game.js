@@ -92,7 +92,7 @@ export default function Game() {
     // check if there is a winner after each render having a dependency of the state of 'winner'
     // it first checks if there is a winner and then lock the board and show the winner
     useEffect(() => {
-        if (winner && winner !== 'D') {
+        if (winner) {
             setLock(true);
             setTimeout(() => {
                 showModal();
