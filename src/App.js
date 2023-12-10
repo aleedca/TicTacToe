@@ -1,14 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from './tictactoe/home';
-import Game from './tictactoe/game';
+import Home from './home.js';
+import Game from './game.js';
 import './App.css'
 
 export default function App() {
     return (
-        <Router>
+        <Router basename="/TicTacToe">
             <Routes>
-                <Route path="/" element={<Home />} />
+                <Route exact path="/" element={<Home />} />
                 <Route path="/game" element={<Game />} />
             </Routes>
         </Router>

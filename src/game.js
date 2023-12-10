@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import cross from '../assets/cross.png';
-import circle from '../assets/circle.png';
-import conffeti from '../assets/conffeti.png';
-import '../App.css'
+import cross from './assets/cross.png';
+import circle from './assets/circle.png';
+import conffeti from './assets/conffeti.png';
+import './App.css'
 
 let data = ["", "", "", "", "", "", "", "", ""];
 
