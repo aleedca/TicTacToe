@@ -1,16 +1,16 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import './app.css'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from './tictactoe/home';
+import Game from './tictactoe/game';
+import './App.css'
 
 export default function App() {
     return (
-        <div className='center-screen'>
-        <div className='menu'>
-            <h1>Tic Tac Toe</h1>
-            <h3>Who's there?</h3>
-            <button>One player</button>
-            <button>Two players</button>
-        </div>
-        </div>
+        <Router>
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/game" element={<Game />} />
+            </Routes>
+        </Router>
     );
 }

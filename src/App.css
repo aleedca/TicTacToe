@@ -1,43 +1,44 @@
 @import url('https://fonts.googleapis.com/css?family=Inter&display=swap');
 
+/* GlOBALS ----------------------------------------------------------------------------------------------------------*/
+
 :root {
-    --primary-color-100: #B6B79E;
-    --primary-color-200: #8E7B5E;
-    --primary-color-300: #FFFFE7;
-    --primary-color-400: #000000;
+  --primary-color-100: #B6B79E;
+  --primary-color-200: #8E7B5E;
+  --primary-color-300: #FFFFE7;
+  --primary-color-400: 0,0,0;
 
-    --secondary-color-100: #E8830C;
-    --secondary-color-200: #9c8765;
-    --secondary-color-300: #8C0D0D;
-    --secondary-color-400: #7f7b7b;
-    --secondary-color-500: rgba(224, 217, 211, 0.757);
+  --secondary-color-100: #E8830C;
+  --secondary-color-200: #9c8765;
+  --secondary-color-300: #8C0D0D;
+  --secondary-color-400: #7f7b7b;
 
-
-    --primary-font: 'Inter', sans-serif;
+  --primary-font: 'Inter', sans-serif;
 }
 
 body {
-    font-family: var(--primary-font);
-    background-color: var(--primary-color-100);
-    height: 100%;
-    margin: 0;
-    padding: 0;
+  font-family: var(--primary-font);
+  background-color: var(--primary-color-100);
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-button{
+button {
   background-color: var(--primary-color-200);
   border-radius: 0.5rem;
   border: none;
   width: 15rem;
-  height: 4rem;
+  height: 5rem;
   font-size: 1.3rem;
   font-weight: bold;
   font-family: var(--primary-font);
   cursor: pointer;
   transition: all 0.3s ease-in-out;
+  margin-top: 1.4rem;
 }
 
-button:hover{
+button:hover {
   background-color: var(--secondary-color-200);
 }
 
@@ -49,25 +50,94 @@ button:hover{
   width: 100vw;
 }
 
-.menu{
+.components {
   display: flex;
   flex-direction: column;
   text-align: center;
+  animation: fadeIn 1s ease-in-out;
 }
 
-.menu h1{
+/* COMPONENT MENU ----------------------------------------------------------------------------------------------------------*/
+
+.components h1 {
   font-size: 3rem;
   font-weight: bold;
   color: var(--primary-color-400);
 }
 
-.menu h3{
+.components h3 {
   font-size: 1.5rem;
   font-weight: semi-bold;
   color: var(--primary-color-300);
 }
 
-.menu button{
-  margin: 1.4rem;
+/* COMPONENT GAME ----------------------------------------------------------------------------------------------------------*/
+
+.board {
+  display: flex;
+  margin: 1.4rem auto;
 }
 
+.square {
+  display: flex;
+  width: 8rem;
+  height: 8rem;
+  margin: 0.5rem 0.3rem 0.5rem 0.3rem;
+  background-color: var(--primary-color-300);
+  border-radius: 0.7rem;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.square img {
+  margin: 2rem 2rem;
+}
+
+/* add some animation to the img square */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* COMPONENT GAME OVER ----------------------------------------------------------------------------------------------------------*/
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(var(--primary-color-400), 0.83);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.modal-content {
+  color: var(--primary-color-300);
+  padding: 20px;
+  border-radius: 10px;
+  margin: 14.5rem;
+  text-align: center;
+}
+
+.content img {
+  width: 2rem;
+  height: 2rem;
+  position: relative;
+  
+}
+
+.img-conffeti img {
+  position: absolute;
+  top: 0; /* This positions the image at the top of the screen */
+  left: 0rem;
+  width: 100%;
+  height: 80%;
+}
