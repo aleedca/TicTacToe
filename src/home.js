@@ -24,8 +24,8 @@ function Home() {
         <Link to='game'><button>Two players</button></Link>
       </div>
 
-      <Dialog header="Sorry!!!" visible={visible} onHide={() => setVisible(false)}
-        style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
+      <Dialog header="SORRY :(" visible={visible} resizable={false} onHide={() => setVisible(false)}
+        style={{ maxWidth: '80vw', textAlign: 'justify', minWidth: '20vh', fontSize: '1.2rem'}} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
         <p className="m-0">
           Esta funcionalidad no está disponible en esta versión. Pronto podrás jugar contra la computadora.
         </p>

@@ -27,14 +27,14 @@ body {
   color: var(--primary-color-400);
   border-radius: 0.5rem;
   border: none;
-  width: 15rem;
-  height: 5rem;
-  font-size: 1.5rem;
+  width: 14rem;
+  height: 4rem;
+  font-size: 1.34rem;
   font-weight: bold;
   font-family: var(--primary-font);
   cursor: pointer;
   transition: all 0.3s ease-in-out;
-  margin-top: 3rem;
+  margin-top: 2.5rem;
 }
 
 button:hover {
@@ -59,13 +59,13 @@ button:hover {
 /* COMPONENT MENU ----------------------------------------------------------------------------------------------------------*/
 
 .components h1 {
-  font-size: 3rem;
+  font-size: 2.8rem;
   font-weight: bold;
   color: var(--primary-color-400);
 }
 
 .components h3 {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: semi-bold;
   color: var(--primary-color-300);
 }
@@ -79,8 +79,8 @@ button:hover {
 
 .square {
   display: flex;
-  width: 8rem;
-  height: 8rem;
+  width: 7rem;
+  height: 7rem;
   margin: 0.5rem 0.3rem 0.5rem 0.3rem;
   background-color: var(--primary-color-300);
   border-radius: 0.7rem;
@@ -154,9 +154,8 @@ button:hover {
   }
 
   .components h3 {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
   }
-
   .screen button {
     width: 12rem;
     height: 4rem;
@@ -164,8 +163,8 @@ button:hover {
   }
 
   .square {
-    width: 6.6rem;
-    height: 6.6rem;
+    width: 6.5rem;
+    height: 6.5rem;
   }
 }
 
