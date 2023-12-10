@@ -114,6 +114,10 @@ button:hover {
   background-color: var(--secondary-color-300);
 }
 
+.content {
+  margin-top: 10rem;
+}
+
 .content img {
   width: 3rem;
   height: 2rem;
