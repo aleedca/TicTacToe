@@ -107,7 +107,7 @@ export default function Game() {
 
     // render the game board
     return (
-        <div className='center-screen'>
+        <div className='screen'>
             <div className='components' id='content'>
                 <h1>Tic Tac Toe</h1>
                 <div className='board'>
