@@ -93,6 +93,7 @@ export default function Game() {
 
     // update the state of 'winner' in this function
     const won = (winner) => {
+        setWinner(winner);
         setTimeout(() => {
             document.getElementById('content').style.filter = "blur(10px)";
             setIsModalVisible(true);
@@ -140,7 +141,7 @@ export default function Game() {
                 </div>
                 <Link to='/'><button onClick={(e) => handleRestart(e, 0)}>Restart</button></Link>
             </div>
-            {isModalVisible && (
+            {isModalVisible && winner && (
                 <div className="modal">
                     <div className="modal-content">
                         <div className='content'>
