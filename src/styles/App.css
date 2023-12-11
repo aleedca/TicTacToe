@@ -118,6 +118,11 @@ button:hover {
   margin-top: 10rem;
 }
 
+.content h1 {
+  font-size: 2rem;
+  color: var(--primary-color-300);
+}
+
 .content img {
   width: 3rem;
   height: 2rem;
@@ -159,6 +164,11 @@ button:hover {
   .components h3 {
     font-size: 1.2rem;
   }
+
+  .content h1 {
+    font-size: 1.8rem;
+  }
+
   .screen button {
     width: 12rem;
     height: 4rem;
@@ -166,8 +176,12 @@ button:hover {
   }
 
   .square {
-    width: 6.5rem;
-    height: 6.5rem;
+    width: 6.2rem;
+    height: 6.2rem;
+  }
+
+  .square img {
+    margin: 1.8rem 1.8rem;
   }
 }
 
