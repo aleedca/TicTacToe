@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import cross from '../assets/cross.png';
 import circle from '../assets/circle.png';
-import confetti from "https://cdn.skypack.dev/canvas-confetti";
+import confetti from "canvas-confetti";
 import { createAudio } from '../components/AudioHelper.js';
 import popSound from '../sounds/pop.wav';
 import winSound from '../sounds/win.wav';
@@ -63,6 +63,7 @@ export default function Game() {
         });
 
         if (selection === 1) { // if the user clicks on the go back button then navigate to the home page
+            confetti.reset();
             navigate('/');
         }
     }
@@ -95,30 +96,36 @@ export default function Game() {
         setWinner(winner);
     }
 
+    // show the modal when the game is over
+    // the usecallback hook is used to prevent the function from being created every time the component renders
+    const showModal = useCallback(() => {
+        document.getElementById('content').style.filter = "blur(10px)";
+        setIsModalVisible(true);
+        
+        if(winner === 'D') {
+            drawAudio.play();
+        }
+        
+        if (winner !== 'D') {
+            winAudio.play();
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => {
+                    confetti({particleCount: 300, spread: 200, origin: { y: 0.5 }});
+                }, i * 800); // delay between each repetition
+            }
+        }
+    }, [winner, drawAudio, winAudio]);
+
     // check if there is a winner after each render having a dependency of the state of 'winner'
     // it first checks if there is a winner and then lock the board and show the winner
     useEffect(() => {
         if (winner) {
             setLock(true);
             setTimeout(() => {
-                // show the modal when the game is over
-                document.getElementById('content').style.filter = "blur(10px)";
-                setIsModalVisible(true);
-                
-                if(winner === 'D') {
-                    drawAudio.play();
-                } else if (winner !== 'D') {
-                    winAudio.play();
-                    for (let i = 0; i < 3; i++) {
-                        setTimeout(() => {
-                            confetti({particleCount: 300, spread: 200, origin: { y: 0.5 }
-                            });
-                        }, i * 800); // delay between each repetition
-                    }
-                }
+                showModal();
             }, 500);
         }
-    }, [winner, winAudio, drawAudio]);
+    }, [winner, showModal]);
 
     // render the game board
     return (
