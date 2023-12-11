@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import cross from './assets/cross.png';
-import circle from './assets/circle.png';
-import conffeti from './assets/conffeti.png';
-import './App.css'
+import cross from '../assets/cross.png';
+import circle from '../assets/circle.png';
+import confetti from "https://cdn.skypack.dev/canvas-confetti";
+import { createAudio } from '../components/AudioHelper.js';
+import popSound from '../sounds/pop.wav';
+import winSound from '../sounds/win.wav';
+import drawSound from '../sounds/draw.wav';
+import '../styles/App.css'
 
 let data = ["", "", "", "", "", "", "", "", ""];
 
@@ -13,31 +17,33 @@ export default function Game() {
     let [lock, setLock] = useState(false);
     let [winner, setWinner] = useState(null);
     let [isModalVisible, setIsModalVisible] = useState(false);
-
+    let clickButtonAudio = createAudio(popSound, 0.2, 1.5);
+    let winAudio = createAudio(winSound, 0.4, 1);
+    let drawAudio = createAudio(drawSound, 0.4, 1);
 
     // handle the click event of each square of the board
     const handleClick = (event, num) => {
         event.preventDefault();
 
-        if (lock) { // check if the board is locked
+        // check if the board is locked
+        if (lock) {
             return 0;
         }
 
-        if (event.target.querySelector('img')) { // check if the square already has an image
-            return;
-        }
-
-        else if (count % 2 !== 0) { // check if the count is even or odd and set the image accordingly
+        // check if the count is odd and if the square in data is empty then add a cross
+        if (count % 2 !== 0 && data[num] === '') {
             event.target.innerHTML = `<img src='${cross}' class='fade-in' alt=''>`;
             data[num] = 'X';
             setCount(++count);
-        } else {
+        }
+
+        // check if the count is even and if the square in data is empty then add a circle
+        if (count % 2 === 0 && data[num] === '') {
             event.target.innerHTML = `<img src='${circle}' class='fade-in' alt=''>`;
             data[num] = 'O';
             setCount(++count);
         }
 
-        console.log(count);
         checkWinner();
     }
 
@@ -45,7 +51,7 @@ export default function Game() {
     // handle the click event of the restart button
     const handleRestart = (e, selection) => {
         e.preventDefault();
-
+        clickButtonAudio.play();
         data = ["", "", "", "", "", "", "", "", ""];
         setCount(0);
         setLock(false);
@@ -95,15 +101,24 @@ export default function Game() {
         if (winner) {
             setLock(true);
             setTimeout(() => {
-                showModal();
+                // show the modal when the game is over
+                document.getElementById('content').style.filter = "blur(10px)";
+                setIsModalVisible(true);
+                
+                if(winner === 'D') {
+                    drawAudio.play();
+                } else if (winner !== 'D') {
+                    winAudio.play();
+                    for (let i = 0; i < 3; i++) {
+                        setTimeout(() => {
+                            confetti({particleCount: 300, spread: 200, origin: { y: 0.5 }
+                            });
+                        }, i * 800); // delay between each repetition
+                    }
+                }
             }, 500);
         }
-    }, [winner]);
-
-    const showModal = () => {
-        document.getElementById('content').style.filter = "blur(10px)";
-        setIsModalVisible(true);
-    }
+    }, [winner, winAudio, drawAudio]);
 
     // render the game board
     return (
@@ -111,17 +126,17 @@ export default function Game() {
             <div className='components' id='content'>
                 <h1>Tic Tac Toe</h1>
                 <div className='board'>
-                    <div className='row'>
+                    <div className='column'>
                         <div className='square' onClick={(e) => { handleClick(e, 0) }}></div>
                         <div className='square' onClick={(e) => { handleClick(e, 1) }}></div>
                         <div className='square' onClick={(e) => { handleClick(e, 2) }}></div>
                     </div>
-                    <div className="row">
+                    <div className="column">
                         <div className='square' onClick={(e) => { handleClick(e, 3) }}></div>
                         <div className='square' onClick={(e) => { handleClick(e, 4) }}></div>
                         <div className='square' onClick={(e) => { handleClick(e, 5) }}></div>
                     </div>
-                    <div className="row">
+                    <div className="column">
                         <div className='square' onClick={(e) => { handleClick(e, 6) }}></div>
                         <div className='square' onClick={(e) => { handleClick(e, 7) }}></div>
                         <div className='square' onClick={(e) => { handleClick(e, 8) }}></div>
@@ -132,17 +147,11 @@ export default function Game() {
             {isModalVisible && winner && (
                 <div className="modal">
                     <div className="modal-content">
-                        {winner !== 'D' && (
-                            <div className='img-conffeti'>
-                                <img src={conffeti} alt=''/>
-                            </div>
-                        )}
-
                         <div className='content'>
                             {winner === 'D' ? (
-                                <h1>Draw <img src={cross} alt=''/> <img src={circle} alt=''/></h1>
+                                <h1>Draw <img src={cross} alt='' /> <img src={circle} alt='' /></h1>
                             ) : (
-                                <h1>Player {winner === 'X' ? <img src={cross} alt=''/> : <img src={circle} alt=''/>} wins</h1>
+                                <h1>Player {winner === 'X' ? <img src={cross} alt='' /> : <img src={circle} alt='' />} wins</h1>
                             )}
                         </div>
                     </div>
