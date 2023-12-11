@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import cross from '../assets/cross.png';
 import circle from '../assets/circle.png';
@@ -93,39 +93,28 @@ export default function Game() {
 
     // update the state of 'winner' in this function
     const won = (winner) => {
-        setWinner(winner);
+        setTimeout(() => {
+            document.getElementById('content').style.filter = "blur(10px)";
+            setIsModalVisible(true);
+            if (winner === 'D') {
+                drawAudio.play();
+            } else if (winner !== 'D') {
+                winAudio.play();
+                confetti({ particleCount: 500, spread: 200, origin: { y: 0.5 } });
+            }
+        }, 600);
     }
 
     // show the modal when the game is over
     // the usecallback hook is used to prevent the function from being created every time the component renders
-    const showModal = useCallback(() => {
-        document.getElementById('content').style.filter = "blur(10px)";
-        setIsModalVisible(true);
-        
-        if(winner === 'D') {
-            drawAudio.play();
-        }
-        
-        if (winner !== 'D') {
-            winAudio.play();
-            for (let i = 0; i < 3; i++) {
-                setTimeout(() => {
-                    confetti({particleCount: 300, spread: 200, origin: { y: 0.5 }});
-                }, i * 800); // delay between each repetition
-            }
-        }
-    }, [winner, drawAudio, winAudio]);
 
     // check if there is a winner after each render having a dependency of the state of 'winner'
     // it first checks if there is a winner and then lock the board and show the winner
     useEffect(() => {
         if (winner) {
             setLock(true);
-            setTimeout(() => {
-                showModal();
-            }, 500);
         }
-    }, [winner, showModal]);
+    }, [winner]);
 
     // render the game board
     return (
@@ -151,7 +140,7 @@ export default function Game() {
                 </div>
                 <Link to='/'><button onClick={(e) => handleRestart(e, 0)}>Restart</button></Link>
             </div>
-            {isModalVisible && winner && (
+            {isModalVisible && (
                 <div className="modal">
                     <div className="modal-content">
                         <div className='content'>
