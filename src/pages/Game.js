@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { createAudio } from '../components/AudioHelper.js'; 
 import cross from '../assets/cross.png';
 import circle from '../assets/circle.png';
 import confetti from "canvas-confetti";
-import { createAudio } from '../components/AudioHelper.js';
 import popSound from '../sounds/pop.wav';
 import winSound from '../sounds/win.wav';
 import drawSound from '../sounds/draw.wav';
 import '../styles/App.css'
 
-let data = ["", "", "", "", "", "", "", "", ""];
+let board = ["", "", "", "", "", "", "", "", ""];
 
 export default function Game() {
     const navigate = useNavigate();
+    const location = useLocation();
+    let playerMode = location.state.playerMode;
     let [count, setCount] = useState(0);
     let [lock, setLock] = useState(false);
     let [winner, setWinner] = useState(null);
@@ -30,29 +32,32 @@ export default function Game() {
             return 0;
         }
 
-        // check if the count is odd and if the square in data is empty then add a cross
-        if (count % 2 !== 0 && data[num] === '') {
-            event.target.innerHTML = `<img src='${cross}' class='fade-in' alt=''>`;
-            data[num] = 'X';
-            setCount(++count);
-        }
+        // check if the player mode is one player
+        if (playerMode === 'onePlayer') {
+            return true;
+        } else {
+            // check if the count is odd and if the square in board is empty then add a cross
+            if (count % 2 === 0 && board[num] === '') {
+                event.target.innerHTML = `<img src='${cross}' class='fade-in' alt=''>`;
+                board[num] = 'X';
+                setCount(++count);
+            }
 
-        // check if the count is even and if the square in data is empty then add a circle
-        if (count % 2 === 0 && data[num] === '') {
-            event.target.innerHTML = `<img src='${circle}' class='fade-in' alt=''>`;
-            data[num] = 'O';
-            setCount(++count);
+            // check if the count is even and if the square in board is empty then add a circle
+            if (count % 2 !== 0 && board[num] === '') {
+                event.target.innerHTML = `<img src='${circle}' class='fade-in' alt=''>`;
+                board[num] = 'O';
+                setCount(++count);
+            }
+            checkWinner();
         }
-
-        checkWinner();
     }
-
 
     // handle the click event of the restart button
     const handleRestart = (e, selection) => {
         e.preventDefault();
         clickButtonAudio.play();
-        data = ["", "", "", "", "", "", "", "", ""];
+        board = ["", "", "", "", "", "", "", "", ""];
         setCount(0);
         setLock(false);
         setWinner(null);
@@ -70,28 +75,28 @@ export default function Game() {
 
     // check if there is a winner in the game and return the last player
     const checkWinner = () => {
-        if (data[0] === data[1] && data[1] === data[2] && data[0] !== '') {
-            won(data[0]);
-        } else if (data[3] === data[4] && data[4] === data[5] && data[3] !== '') {
-            won(data[3]);
-        } else if (data[6] === data[7] && data[7] === data[8] && data[6] !== '') {
-            won(data[6]);
-        } else if (data[0] === data[3] && data[3] === data[6] && data[0] !== '') {
-            won(data[0]);
-        } else if (data[1] === data[4] && data[4] === data[7] && data[1] !== '') {
-            won(data[1]);
-        } else if (data[2] === data[5] && data[5] === data[8] && data[2] !== '') {
-            won(data[2]);
-        } else if (data[0] === data[4] && data[4] === data[8] && data[0] !== '') {
-            won(data[0]);
-        } else if (data[2] === data[4] && data[4] === data[6] && data[2] !== '') {
-            won(data[2]);
+        if (board[0] === board[1] && board[1] === board[2] && board[0] !== '') {
+            won(board[0]);
+        } else if (board[3] === board[4] && board[4] === board[5] && board[3] !== '') {
+            won(board[3]);
+        } else if (board[6] === board[7] && board[7] === board[8] && board[6] !== '') {
+            won(board[6]);
+        } else if (board[0] === board[3] && board[3] === board[6] && board[0] !== '') {
+            won(board[0]);
+        } else if (board[1] === board[4] && board[4] === board[7] && board[1] !== '') {
+            won(board[1]);
+        } else if (board[2] === board[5] && board[5] === board[8] && board[2] !== '') {
+            won(board[2]);
+        } else if (board[0] === board[4] && board[4] === board[8] && board[0] !== '') {
+            won(board[0]);
+        } else if (board[2] === board[4] && board[4] === board[6] && board[2] !== '') {
+            won(board[2]);
         } else if (count === 9) {
             won('D'); // if there is no winner and the count is 9 then it is a draw
         }
     }
 
-    // update the state of 'winner' in this function
+    // update the state of 'winner' in this function and show the modal
     const won = (winner) => {
         setWinner(winner);
         setTimeout(() => {
@@ -106,11 +111,8 @@ export default function Game() {
         }, 600);
     }
 
-    // show the modal when the game is over
-    // the usecallback hook is used to prevent the function from being created every time the component renders
-
     // check if there is a winner after each render having a dependency of the state of 'winner'
-    // it first checks if there is a winner and then lock the board and show the winner
+    // it first checks if there is a winner and then lock the board
     useEffect(() => {
         if (winner) {
             setLock(true);
@@ -139,7 +141,9 @@ export default function Game() {
                         <div className='square' onClick={(e) => { handleClick(e, 8) }}></div>
                     </div>
                 </div>
-                <Link to='/'><button onClick={(e) => handleRestart(e, 0)}>Restart</button></Link>
+                <div className='container-buttons'>
+                    <button onClick={(e) => handleRestart(e, 0)}>Restart</button>
+                </div>
             </div>
             {isModalVisible && winner && (
                 <div className="modal">
@@ -152,7 +156,7 @@ export default function Game() {
                             )}
                         </div>
                     </div>
-                    <Link to='/'><button onClick={(e) => handleRestart(e, 1)}>Go back</button></Link>
+                    <button onClick={(e) => handleRestart(e, 1)}>Go back</button>
                 </div>
             )}
         </div>
