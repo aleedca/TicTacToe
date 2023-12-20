@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { createAudio } from '../components/AudioHelper.js'; 
+import { createAudio } from '../components/AudioHelper.js';
 import cross from '../assets/cross.png';
 import circle from '../assets/circle.png';
 import confetti from "canvas-confetti";
@@ -9,63 +9,86 @@ import winSound from '../sounds/win.wav';
 import drawSound from '../sounds/draw.wav';
 import '../styles/App.css'
 
-let board = ["", "", "", "", "", "", "", "", ""];
-
 export default function Game() {
     const navigate = useNavigate();
     const location = useLocation();
-    let playerMode = location.state.playerMode;
-    let [count, setCount] = useState(0);
-    let [lock, setLock] = useState(false);
-    let [winner, setWinner] = useState(null);
-    let [isModalVisible, setIsModalVisible] = useState(false);
-    let clickButtonAudio = createAudio(popSound, 0.2, 1.5);
-    let winAudio = createAudio(winSound, 0.4, 1);
-    let drawAudio = createAudio(drawSound, 0.4, 1);
+    const playerMode = location.state.playerMode;
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
-    // handle the click event of each square of the board
-    const handleClick = (event, num) => {
+    const clickButtonAudio = createAudio(popSound, 0.2, 1.5);
+    const winAudio = createAudio(winSound, 0.4, 1);
+    const drawAudio = createAudio(drawSound, 0.4, 1);
+
+    const [board, setBoard] = useState(Array(9).fill(''));
+    const [count, setCount] = useState(0);
+    const [lock, setLock] = useState(false);
+    const [winner, setWinner] = useState(null);
+
+    const handlePlayerMove = (event, num) => {
         event.preventDefault();
 
-        // check if the board is locked
-        if (lock) {
+        if (lock || board[num] !== '') {
             return 0;
-        }
+        } else if (count % 2 === 0) {
+            event.target.innerHTML = `<img src='${cross}' class='fade-in' alt=''>`;
+            board[num] = 'X';
+        } else if (count % 2 !== 0) {
+            event.target.innerHTML = `<img src='${circle}' class='fade-in' alt=''>`;
+            board[num] = 'O';
 
-        // check if the player mode is one player
-        if (playerMode === 'onePlayer') {
-            return true;
-        } else {
-            // check if the count is odd and if the square in board is empty then add a cross
-            if (count % 2 === 0 && board[num] === '') {
-                event.target.innerHTML = `<img src='${cross}' class='fade-in' alt=''>`;
-                board[num] = 'X';
-                setCount(++count);
-            }
-
-            // check if the count is even and if the square in board is empty then add a circle
-            if (count % 2 !== 0 && board[num] === '') {
-                event.target.innerHTML = `<img src='${circle}' class='fade-in' alt=''>`;
-                board[num] = 'O';
-                setCount(++count);
-            }
-            checkWinner();
         }
+        setBoard(board);
+        setCount(count + 1);
+        checkWinner();
+    }
+
+    const handleAIMove = () => {
+        console.log("AI is thinking");
+
+        let emptySquares = getEmptySquares();
+
+        if (!emptySquares.length) return; // if there are no empty squares, return
+
+        let randomSquare = emptySquares[Math.floor(Math.random() * emptySquares.length)];
+
+        let squares = document.querySelectorAll('.square');
+
+        setTimeout(() => {
+            board[randomSquare] = 'O';
+            setBoard(board);
+            setCount(count + 1);
+            squares[randomSquare].innerHTML = `<img src='${circle}' class='fade-in' alt=''>`;
+            if (playerMode === 'onePlayer') {
+                checkWinner(); // call checkWinner after the AI has made its move
+            }
+        }, 800);
+    }
+
+    // get all the empty squares of the board
+    const getEmptySquares = () => {
+        let emptySquare = [];
+        for (let i = 0; i < board.length; i++) {
+            if (board[i] === '') {
+                emptySquare.push(i);
+            }
+        }
+        return emptySquare;
     }
 
     // handle the click event of the restart button
-    const handleRestart = (e, selection) => {
-        e.preventDefault();
+    const handleRestartBack = (selection) => {
         clickButtonAudio.play();
-        board = ["", "", "", "", "", "", "", "", ""];
+        setBoard(Array(9).fill(''));
         setCount(0);
         setLock(false);
         setWinner(null);
         setIsModalVisible(false);
+
         let squares = document.querySelectorAll('.square'); // get all the components that has .square of the board and store them in the squares array
         squares.forEach(square => { // clear the content of each square
             square.innerHTML = '';
         });
+
 
         if (selection === 1) { // if the user clicks on the go back button then navigate to the home page
             confetti.reset();
@@ -75,8 +98,8 @@ export default function Game() {
 
     // check if there is a winner in the game and return the last player
     const checkWinner = () => {
-        if (board[0] === board[1] && board[1] === board[2] && board[0] !== '') {
-            won(board[0]);
+        if (board[0] === board[1] && board[1] === board[2] && board[2] !== '') {
+            won(board[2]);
         } else if (board[3] === board[4] && board[4] === board[5] && board[3] !== '') {
             won(board[3]);
         } else if (board[6] === board[7] && board[7] === board[8] && board[6] !== '') {
@@ -91,7 +114,8 @@ export default function Game() {
             won(board[0]);
         } else if (board[2] === board[4] && board[4] === board[6] && board[2] !== '') {
             won(board[2]);
-        } else if (count === 9) {
+        } else if (board.every(square => square !== '')) {
+            console.log("drawww", count);
             won('D'); // if there is no winner and the count is 9 then it is a draw
         }
     }
@@ -111,13 +135,22 @@ export default function Game() {
         }, 600);
     }
 
-    // check if there is a winner after each render having a dependency of the state of 'winner'
-    // it first checks if there is a winner and then lock the board
+    // check if there is a winner after each render with a dependency of the state of 'winner'
     useEffect(() => {
         if (winner) {
             setLock(true);
         }
     }, [winner]);
+
+    // add event listener to each square after each render with a dependency of the change of 'playerMode'
+    useEffect(() => {
+        if (playerMode === 'onePlayer') {
+            let squares = document.querySelectorAll('.square'); // get all squares
+            squares.forEach((square, num) => { // add event listener to each square
+                square.addEventListener('click', (event) => handlePlayerMove(event, num));
+            });
+        }
+    }, [playerMode]);
 
     // render the game board
     return (
@@ -126,23 +159,23 @@ export default function Game() {
                 <h1>Tic Tac Toe</h1>
                 <div className='board'>
                     <div className='column'>
-                        <div className='square' onClick={(e) => { handleClick(e, 0) }}></div>
-                        <div className='square' onClick={(e) => { handleClick(e, 1) }}></div>
-                        <div className='square' onClick={(e) => { handleClick(e, 2) }}></div>
+                        <div className='square' onClick={(e) => { handlePlayerMove(e, 0) }}></div>
+                        <div className='square' onClick={(e) => { handlePlayerMove(e, 1) }}></div>
+                        <div className='square' onClick={(e) => { handlePlayerMove(e, 2) }}></div>
                     </div>
                     <div className="column">
-                        <div className='square' onClick={(e) => { handleClick(e, 3) }}></div>
-                        <div className='square' onClick={(e) => { handleClick(e, 4) }}></div>
-                        <div className='square' onClick={(e) => { handleClick(e, 5) }}></div>
+                        <div className='square' onClick={(e) => { handlePlayerMove(e, 3) }}></div>
+                        <div className='square' onClick={(e) => { handlePlayerMove(e, 4) }}></div>
+                        <div className='square' onClick={(e) => { handlePlayerMove(e, 5) }}></div>
                     </div>
                     <div className="column">
-                        <div className='square' onClick={(e) => { handleClick(e, 6) }}></div>
-                        <div className='square' onClick={(e) => { handleClick(e, 7) }}></div>
-                        <div className='square' onClick={(e) => { handleClick(e, 8) }}></div>
+                        <div className='square' onClick={(e) => { handlePlayerMove(e, 6) }}></div>
+                        <div className='square' onClick={(e) => { handlePlayerMove(e, 7) }}></div>
+                        <div className='square' onClick={(e) => { handlePlayerMove(e, 8) }}></div>
                     </div>
                 </div>
                 <div className='container-buttons'>
-                    <button onClick={(e) => handleRestart(e, 0)}>Restart</button>
+                    <button onClick={() => handleRestartBack(0)}>Restart</button>
                 </div>
             </div>
             {isModalVisible && winner && (
@@ -156,7 +189,7 @@ export default function Game() {
                             )}
                         </div>
                     </div>
-                    <button onClick={(e) => handleRestart(e, 1)}>Go back</button>
+                    <button onClick={() => handleRestartBack(1)}>Go back</button>
                 </div>
             )}
         </div>
